@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:core';
 import 'package:contacts_service/contacts_service.dart';
 
 import '../../translation/translations.dart';
@@ -6,8 +7,7 @@ import '../../translation/translations.dart';
 class ContactModel {
   final Contact _contact;
   String _selectedPhoneNumber = "";
-
-  String _searchString;
+  String _searchString = "";
 
   ContactModel(this._contact) {
     _searchString = _contact.displayName.toLowerCase()
@@ -30,8 +30,6 @@ class ContactModel {
 
   String get phoneNumberSubtitle => _getPhoneSubtitles();
 
-  String get searchString => _searchString;
-
   bool get selected => _selectedPhoneNumber.isNotEmpty;
 
   void unselect() {
@@ -45,6 +43,7 @@ class ContactModel {
       _selectedPhoneNumber = selectedPhoneNumber;      
     }
   }
+  String get searchString => _searchString;
   
   String _getPhoneSubtitles() {
     if(_contact == null 
