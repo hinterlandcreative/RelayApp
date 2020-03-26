@@ -19,117 +19,156 @@ class NewGroupScreen extends StatelessWidget {
     return FocusWatcher(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0.0,
-              left: 0.0,
-              right: 0.0,
-              height: top + 130.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppStyles.primaryGradientStart, AppStyles.primaryGradientEnd],
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight)),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 15.0, 
-                    right: AppStyles.horizontalMargin),
-                  child: Row(children: <Widget>[
-                    BackButton(onPressed: () {
-                      return Navigator.pop(context);
-                    }, color: Colors.white,),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: top),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            TextField(
-                              onChanged: (s) => print(s),
-                              style: AppStyles.heading1.copyWith(color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: "New Group".i18n,
-                                hintStyle: AppStyles.heading1.copyWith(color: Colors.white),
-                                border: InputBorder.none)),
-                            Container(
-                              height: 0.50,
-                              color: Colors.white)])))])))),
-            Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              right: 0.0,
-              height: bottom + 100.0,
-              child: Container(
-                color: AppStyles.brightGreenBlue,
-                child: Padding(
-                  padding: EdgeInsets.only(top:30),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => Container(
-                      width: constraints.maxWidth,
-                      height: constraints.maxHeight,
-                      child: FlatButton(
-                        onPressed: () {},
-                        child: Text("save".i18n, style: AppStyles.heading1))))))),
-            Positioned.fill(
-              top: top + 90.0,
-              bottom: bottom + 60.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(40.00)),
-                child: Consumer<ContactsCollectionModel>(
-                  builder: (context, model, _) {
-                    if(model.isLoading) return _buildLoadingWidget(); 
-                    if(model.contactsList.isEmpty) return Center(child: Text("Add some contacts first.".i18n, style: AppStyles.heading2));
+        body: ChangeNotifierProvider<ContactsCollectionModel>(
+          create: (_) => ContactsCollectionModel(),
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: 0.0,
+                left: 0.0,
+                right: 0.0,
+                height: top + 130.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppStyles.primaryGradientStart, AppStyles.primaryGradientEnd],
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight)),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 15.0, 
+                      right: AppStyles.horizontalMargin),
+                    child: Row(children: <Widget>[
+                      BackButton(onPressed: () {
+                        return Navigator.pop(context);
+                      }, color: Colors.white,),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: top),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              TextField(
+                                onChanged: (s) => print(s),
+                                style: AppStyles.heading1.copyWith(color: Colors.white),
+                                decoration: InputDecoration(
+                                  hintText: "New Group".i18n,
+                                  hintStyle: AppStyles.heading1.copyWith(color: Colors.white),
+                                  border: InputBorder.none)),
+                              Container(
+                                height: 0.50,
+                                color: Colors.white)])))])))),
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                height: bottom + 100.0,
+                child: Container(
+                  color: AppStyles.brightGreenBlue,
+                  child: Padding(
+                    padding: EdgeInsets.only(top:30),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => Container(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        child: FlatButton(
+                          onPressed: () {},
+                          child: Text("save".i18n, style: AppStyles.heading1))))))),
+              Positioned.fill(
+                top: top + 90.0,
+                bottom: bottom + 60.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(40.00)),
+                  child: Consumer<ContactsCollectionModel>(
+                    builder: (context, model, _) {
+                        if(model.isLoading) return _buildLoadingWidget();
+                        if(model.allContactsList.isEmpty) return _buildEmptyState();
 
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        top: 20.0,
-                        left: AppStyles.horizontalMargin, 
-                        right: AppStyles.horizontalMargin),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: 0,
-                              minWidth: MediaQuery.of(context).size.width,
-                              maxHeight: 120.0,
-                              maxWidth: MediaQuery.of(context).size.width
-                            ),
-                            child: SingleChildScrollView(
-                              child: Wrap(
-                                spacing: 10.0,
-                                children: model.selectedContactsList.map((contact) => 
-                                ChoiceChip(
-                                  onSelected: (selected) => model.selectContact(context: context, contact: contact),
-                                  selected: false,
-                                  backgroundColor: AppStyles.primaryGradientEnd,
-                                  labelStyle: AppStyles.paragraph,
-                                  label: Text(contact.name),
-                                  avatar: CircleAvatar(
-                                    backgroundColor: AppStyles.lightGrey,
-                                    child: Icon(Icons.close, color: Colors.black),),
-                                )
-                                ).toList(),),
-                            ),
-                          ),
-                          ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: model.contactsList.length,
-                              itemBuilder: (context, index) {
-                                var contact = model.contactsList[index];
-                                return ContactListItem(contact: contact);
-                              })]));
-                  }
-                ),))
-          ],
+                        return Padding(
+                            padding: EdgeInsets.only(
+                              top: 20.0,
+                              left: AppStyles.horizontalMargin, 
+                              right: AppStyles.horizontalMargin),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 192.0,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        model.selectedContactsList.isEmpty
+                                        ? Expanded(child: Center(child: Text("Please select some contacts.".i18n),))
+                                        : ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            minHeight: 0.0,
+                                            maxHeight: 140.0),
+                                          child: SingleChildScrollView(
+                                            child: Wrap(
+                                              spacing: 10.0,
+                                              children: model.selectedContactsList.map((contact) => 
+                                              ChoiceChip(
+                                                onSelected: (selected) => model.selectContact(context: context, contact: contact),
+                                                selected: false,
+                                                backgroundColor: AppStyles.primaryGradientEnd,
+                                                labelStyle: AppStyles.paragraph,
+                                                label: Text(contact.name),
+                                                avatar: CircleAvatar(
+                                                  backgroundColor: AppStyles.lightGrey,
+                                                  child: Icon(Icons.close, color: Colors.black)))).toList())),
+                                        ),
+                                        Row(children: <Widget>[
+                                          Expanded(
+                                            child: Container(
+                                              height: 34.0,
+                                              child: TextField(
+                                                onChanged: (query) => model.searchQuery = query,
+                                                style: AppStyles.paragraph.copyWith(color: Colors.black),
+                                                decoration: InputDecoration(
+                                                  hintText: "Search...".i18n,
+                                                  hintStyle: AppStyles.paragraph.copyWith(color: Colors.black),
+                                                  contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 11.0),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                                  ))),
+                                            )),
+                                          Checkbox(
+                                            value: model.filterToOnlyMobileNumbers,
+                                            onChanged: (checked) => model.filterToOnlyMobileNumbers = checked,),
+                                          Text("Mobile # only".i18n, style: AppStyles.smallText)
+                                        ],)
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: constraints.maxHeight - 192.0,
+                                    child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: model.allContactsList.length,
+                                            itemBuilder: (context, index) {
+                                              var contact = model.allContactsList[index];
+                                              return ContactListItem(contact: contact);
+                                            })
+                                  )]),
+                            ));
+                    }
+                  ),))
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Widget _buildEmptyState([String emptyLabel = "Add some contacts first."]) {
+    return Center(child: Text(emptyLabel.i18n, style: AppStyles.heading2));
   }
 
   Widget _buildLoadingWidget() {
@@ -171,7 +210,7 @@ class ContactListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<ContactsCollectionModel>(context);
-    var lastContact = model.contactsList.last;
+    var lastContact = model.allContactsList.last;
     return GestureDetector(
       onTap: () => model.selectContact(context: context, contact: contact),
       child: Container(

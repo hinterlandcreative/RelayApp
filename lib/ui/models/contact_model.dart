@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:core';
 import 'package:contacts_service/contacts_service.dart';
 
 import '../../translation/translations.dart';
@@ -6,8 +7,15 @@ import '../../translation/translations.dart';
 class ContactModel {
   final Contact _contact;
   String _selectedPhoneNumber = "";
+  String _searchString = "";
 
-  ContactModel(this._contact);
+  ContactModel(this._contact) {
+    _searchString = _contact.displayName.toLowerCase()
+      + _contact.company.toLowerCase() + " "
+      + _contact.phones.map((x) => x.value.replaceAll(RegExp(r'[^\d]',), "")).join() + " "
+      + _contact.postalAddresses.map((a) => a.toString().replaceAll(RegExp(r'[^\d\w]'), " ")).join() + " "
+      + _contact.emails.map((e) => e.value).join();
+  }
 
   String get name => _contact.displayName;
   String get initials => 
@@ -35,6 +43,8 @@ class ContactModel {
       _selectedPhoneNumber = selectedPhoneNumber;      
     }
   }
+
+  String get searchString => _searchString;
   
   String _getPhoneSubtitles() {
     if(_contact == null 
