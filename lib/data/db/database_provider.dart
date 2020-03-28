@@ -1,8 +1,8 @@
-import '../../ioc/dependency_registrar.dart';
-
-import 'app_database.dart';
-import 'database_factory.dart';
 import 'package:path/path.dart';
+
+import 'package:relay/ioc/dependency_registrar.dart';
+import 'package:relay/data/db/app_database.dart';
+import 'package:relay/data/db/database_factory.dart';
 
 class DatabaseProvider {
   LocalDatabaseFactory _localDbFactory;

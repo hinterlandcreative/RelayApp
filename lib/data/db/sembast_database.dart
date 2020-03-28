@@ -1,23 +1,42 @@
-import 'dto.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sembast/sembast_io.dart';
+import 'package:sembast/utils/sembast_import_export.dart';
+
+import 'dto/dto.dart';
 import 'package:sembast/sembast.dart';
 
 import 'app_database.dart';
 import 'db_collection.dart';
 import 'query_package.dart';
 
-class SembastDatabase extends AppDatabase {
+class SembastDatabase implements AppDatabase {
   Database _db;
   
   SembastDatabase(Database db) {
     _db = db;
   }
+
+  @override
+  int get version => _db.version;
+  
   @override
   DbCollection collections(String collectionName) {
     return SembastStore(_db, collectionName);
   }
+
+  @override
+  Future updateVersion(int version) async {
+    assert(_db.version < version);
+    var path = _db.path;
+    var exported = await exportDatabase(_db);
+    exported["version"] = version;
+    _db.close();
+    var db = await importDatabase(exported, databaseFactoryIo, path);
+    _db = db;
+  }
 }
 
-class SembastStore extends DbCollection {
+class SembastStore implements DbCollection {
   Database _db;
 
   String _storeName;
@@ -37,8 +56,9 @@ class SembastStore extends DbCollection {
     var store = intMapStoreFactory.store(_storeName);
 
     int newId;
+    var map  = dto.toMap();
     await _db.transaction((txn) async {
-      newId = await store.add((txn), dto.toMap());
+      newId = await store.add((txn), map);
     });
 
     return newId;
@@ -67,12 +87,12 @@ class SembastStore extends DbCollection {
   }
 
   @override
-  Future<List<T>> query<T extends DTO>(List<QueryPackage> query, T Function(Map<String, dynamic>) itemCreator, {SortOrderType sort, String sortKey}) async {
+  Future<List<T>> query<T extends DTO>(List<QueryPackage> query, T Function(Map<String, dynamic>) itemCreator, {SortOrderType sort, String sortKey, bool findFirst = false}) async {
     Finder finder;
 
     if(query.length == 1) {
       finder = Finder(
-        filter: _getFilter(query[0]),
+        filter: _getFilter(query.first),
       );
     } else {
       finder = Finder(
@@ -90,13 +110,18 @@ class SembastStore extends DbCollection {
     final store = intMapStoreFactory.store(_storeName);
     List<RecordSnapshot<int, Map<String, dynamic>>> records;
     await _db.transaction((txn) async {
-      records = await store.find(txn, finder: finder);
+      if(findFirst) {
+        records = [ await store.findFirst(txn, finder: finder) ];
+      } else {
+        records = await store.find(txn, finder: finder);
+      }
     });
 
     return records
       .map((r) {
-        r.value["id"] = r.key;
-        return itemCreator(r.value);
+        var map = Map<String,dynamic>.from(r.value);
+        map["id"] = r.key;
+        return itemCreator(map);
       })
       .toList();
   }
@@ -127,10 +152,41 @@ class SembastStore extends DbCollection {
 
     return records
       .map((r) {
-        r.value["id"] = r.key;
-        return itemCreator(r.value);
+        var map = Map<String,dynamic>.from(r.value);
+        map["id"] = r.key;
+        return itemCreator(map);
       })
       .toList();
+  }
+
+  @override
+  Future<T> getOne<T extends DTO>(int id, {@required T Function(Map<String, dynamic>) itemCreator}) async {
+    assert(id >= 0);
+    assert(itemCreator != null);
+
+    var store = intMapStoreFactory.store(_storeName);
+    Map<String, dynamic> record;
+    await _db.transaction((txn) async {
+      if(await store.record(id).exists(txn)) {
+        record = await store.record(id).get(txn);
+      }
+    });
+
+    if(record != null) {
+      return itemCreator(record);
+    }
+
+    return null;
+  }
+
+  @override
+  Future<List<T>> getMany<T extends DTO>(List<int> idList, {@required T Function(Map<String, dynamic>) itemCreator}) async {
+    List<T> items = [];
+    for(var id in idList.where((i) => i != null && i >= 0)) {
+      items.add(await getOne(id, itemCreator: itemCreator));
+    }
+
+    return items.where((item) => item != null).toList();
   }
 
   @override
@@ -170,6 +226,22 @@ class SembastStore extends DbCollection {
         break;
       case FilterType.LessThanOrEqualTo:
         return Filter.lessThanOrEquals(field, value);
+        break;
+      case FilterType.Contains:
+        if(value is int) {
+          return Filter.custom((RecordSnapshot<dynamic, dynamic> record) {
+            var valueRec = record.value[field];
+            if(valueRec is int) {
+              return valueRec == value; 
+            } else if(valueRec is List) {
+              return valueRec.contains(value);
+            } else {
+              return false;
+            }
+          });
+        } else {
+          return Filter.matches(field, value, anyInList: true);
+        }
         break;
       default:
         // default case is equals.

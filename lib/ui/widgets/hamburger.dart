@@ -11,7 +11,7 @@ class Hamburger extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: SizedBox(
         width: width + 15.0,

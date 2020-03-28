@@ -1,6 +1,6 @@
-import '../ioc/dependency_registrar.dart';
-import '../data/db/app_database.dart';
-import '../data/db/database_provider.dart';
+import 'package:relay/ioc/dependency_registrar.dart';
+import 'package:relay/data/db/app_database.dart';
+import 'package:relay/data/db/database_provider.dart';
 
 class DatabaseService {
   final String _mainStorageDatabaseName = "appstore.db";

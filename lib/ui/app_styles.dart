@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../mixins/color_mixin.dart';
+
+import 'package:relay/mixins/color_mixin.dart';
 
 class AppStyles {
-  static Color get lightGrey => HexColor.fromHex("#DBDBDB");
+  static Color get lightGrey => HexColor.fromHex("#F3F3F3");
+  static Color get darkGrey => HexColor.fromHex("#707070");
   static Color get primaryGradientStart => HexColor.fromHex("#3E7389");
   static Color get primaryGradientEnd => HexColor.fromHex("#4447A8");
   static Color get brightGreenBlue => HexColor.fromHex("#76CAD8");

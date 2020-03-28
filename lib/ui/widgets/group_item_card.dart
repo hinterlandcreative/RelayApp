@@ -1,43 +1,36 @@
+import 'dart:io';
+
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:commons/commons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:relay/models/group_item.dart';
+import 'package:relay/ui/screens/compose_message_screen.dart';
+import 'package:vibration/vibration.dart';
 
-import '../models/group_model.dart';
-import '../app_styles.dart';
-import 'three_dots.dart';
-import '../../translation/translations.dart';
+import 'package:relay/ui/models/groups_collection_model.dart';
+import 'package:relay/ui/screens/group_view_screen.dart';
+import 'package:relay/models/toggleable_group_item.dart';
+import 'package:relay/ui/app_styles.dart';
+import 'package:relay/models/contact_item.dart';
+import 'package:relay/ui/widgets/three_dots.dart';
+import 'package:relay/translation/translations.dart';
 
-class GroupItemCard extends StatefulWidget {
-  final GroupModel group;
+class GroupItemCard extends StatelessWidget {
+  final ToggleableGroupItemModel group;
   const GroupItemCard({
     Key key, @required this.group,
   }) : super(key: key);
 
   @override
-  _GroupItemCardState createState() => _GroupItemCardState();
-}
-
-class _GroupItemCardState extends State<GroupItemCard> {
-  double parentContainerHeight = 100.0;
-
-  @override
-  void initState() {
-    widget.group.addListener(_updateContainerHeight);
-    super.initState();
-  }
-
-  @override
-  void dispose() { 
-    widget.group.removeListener(_updateContainerHeight);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var model = Provider.of<GroupsCollectionModel>(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
         curve: Curves.fastLinearToSlowEaseIn,
-        height: parentContainerHeight,
+        height: group.selected ? 142.0 : 100.0,
         width: MediaQuery.of(context).size.width,
         child: Stack(
           children: <Widget>[
@@ -64,8 +57,9 @@ class _GroupItemCardState extends State<GroupItemCard> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       GestureDetector(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GroupViewScreen(group))),
                         child: Text(
-                          "%d Contacts".i18n.fill([widget.group.totalContactCount]),
+                          "%d Contacts".i18n.fill([group.contacts.length]),
                           style: AppStyles.heading2Bold.copyWith(color: Colors.white))),
                       Padding(
                         padding: const EdgeInsets.all(6.0),
@@ -74,6 +68,7 @@ class _GroupItemCardState extends State<GroupItemCard> {
                           color: Color(0xffffffff).withOpacity(0.12),),
                       ),
                       GestureDetector(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ComposeMessageScreen(group: group, recipients: group.contacts))),
                         child: Text(
                           "Compose".i18n,
                           style: AppStyles.heading2Bold.copyWith(color: AppStyles.brightGreenBlue)))
@@ -86,15 +81,19 @@ class _GroupItemCardState extends State<GroupItemCard> {
               right: 0,
               height: 100,
               child: GestureDetector(
-                onTap: () => widget.group.toggleSelected(),
+                onLongPress: () => _showModalDialog(context, group),
+                onDoubleTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GroupViewScreen(group))),
+                onTap: () {
+                  model.toggleSelected(group);
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     color: Color(0xffffffff),
                     boxShadow: [
                       BoxShadow(
-                        offset: Offset(2.00,2.00),
+                        offset: Offset(2.00, 2.00),
                         color: Color(0xff000000).withOpacity(0.16),
-                        blurRadius: 25,),], 
+                        blurRadius: 25.0,),], 
                     borderRadius: BorderRadius.circular(20.00),),
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
@@ -102,10 +101,16 @@ class _GroupItemCardState extends State<GroupItemCard> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                        Text(widget.group.title, style: AppStyles.heading2Bold),
-                        Row(children: widget.group.imagePath.length > 5
-                        ? widget.group.imagePath.take(5).map((path) => _getSmallContactImage(path)).toList() + [ThreeDots()]
-                        : widget.group.imagePath.map((path) => _getSmallContactImage(path)).toList())
+                        Text(group.name, style: AppStyles.heading2Bold),
+                        Row(children: group.contacts.length > 5
+                        ? group.contacts
+                          .take(5)
+                          .map((contact) => contact.imagePath == null || contact.imagePath.isEmpty
+                            ? _buildInitialsAvatar(contact)
+                            : _getSmallContactImage(contact.imageFile)).toList() + [ThreeDots()]
+                        : group.contacts.map((contact) => contact.imagePath == null || contact.imagePath.isEmpty
+                            ? _buildInitialsAvatar(contact)
+                            : _getSmallContactImage(contact.imageFile)).toList())
                         ],)
                       ),
                   ),
@@ -117,19 +122,75 @@ class _GroupItemCardState extends State<GroupItemCard> {
       );
   }
 
-  Widget _getSmallContactImage(String path) {
+  Widget _buildInitialsAvatar(ContactItemModel contact) {
     return Padding(
       padding: const EdgeInsets.only(right:10.0),
-      child: Image(
-        width: 25,
-        height: 25,
-        image: AssetImage(path)),
+      child: Container(
+        width: 25.0,
+        height: 25.0,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppStyles.primaryGradientStart, 
+              AppStyles.primaryGradientEnd],
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight),
+          shape: BoxShape.circle),
+        child: Center(
+          child:Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: AutoSizeText(
+              contact.initials, 
+              minFontSize: 1,
+              style: AppStyles.heading1.copyWith(color: Colors.white),),
+          ),),),
     );
   }
 
-  void _updateContainerHeight() {
-    setState(() {
-      parentContainerHeight = widget.group.selected ? 142.0 : 100.0;
-    });
+  Widget _getSmallContactImage(File image) {
+    return Padding(
+      padding: const EdgeInsets.only(right:10.0),
+      child: Container(
+        height: 25.0,
+        width: 25.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            image: FileImage(image))
+        )));
+  }
+
+  void _showModalDialog(BuildContext context, GroupItemModel model) async {
+    try {
+      if(await Vibration.hasVibrator()) {
+        await Vibration.vibrate(duration: 100);
+      }
+    } catch(_) {}
+
+    optionsDialog(
+      context, 
+      model.name, 
+      <Option>[
+        Option(
+          Text("Duplicate".i18n, style: AppStyles.heading2Bold),
+          Icon(Icons.content_copy),
+          () => Provider.of<GroupsCollectionModel>(context, listen: false).duplicateGroup(model)
+        ),
+        Option(
+          Text("Delete".i18n, style: AppStyles.heading2Bold),
+          Icon(Icons.delete_outline),
+          () => confirmationDialog(
+            context, 
+            "Are you sure you want to delete the group '%s'?".fill([model.name]),
+            confirmationText: "Check this box to confirm delete!".i18n,
+            title: "Confirm delete?".i18n,
+            icon: AlertDialogIcon.WARNING_ICON,
+            negativeText: "No".i18n,
+            positiveText: "Yes".i18n,
+            positiveAction: () async {
+              await Provider.of<GroupsCollectionModel>(context, listen: false).deleteGroup(model);
+            })
+        )
+    ]);
   }
 }
