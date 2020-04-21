@@ -1,5 +1,5 @@
 name: relay
-version: 1.0.4+1
+version: 1.0.5+1
 description: A new Flutter project.
 environment: 
   sdk: '>=2.6.0 <3.0.0'
