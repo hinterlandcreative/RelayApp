@@ -27,6 +27,16 @@ jobs:
         provisioningProfileLocation: 'secureFiles'
         provProfileSecureFile: 'HSCOrelaydistribution.mobileprovision'
       displayName: Installing iOS Dist Mobile Provisioning Profile
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: 'GoogleService-Info.plist'
+    - script: cp GoogleService-Info.plist ios/Runner/GoogleService-Info.plist
+    - task: DownloadSecureFile@1
+      inputs:
+        secureFile: 'api_constants.dart'
+    - script: |
+        mkdir -p lib/secrets
+        cp api_constants.dart lib/secrets/api_constants.dart
     - task: FlutterInstall@0
     - script: |
         echo $(FlutterToolPath)
