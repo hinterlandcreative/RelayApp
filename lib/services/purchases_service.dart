@@ -67,7 +67,10 @@ class PurchasesService {
 
     try {
       PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
-      return purchaserInfo.entitlements.all[unlimitedGroupsEntitlement].isActive;
+      if(purchaserInfo.entitlements.all[unlimitedGroupsEntitlement].isActive) {
+        _unlimitedGroupsPurchases.sink.add(null);
+        return true;
+      }
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
@@ -95,6 +98,9 @@ class PurchasesService {
 
     try {
       await Purchases.restoreTransactions();
+      if(await hasUnlimitedGroupsEntitlement()) {
+        _unlimitedGroupsPurchases.sink.add(null);
+      }
       return true;
     } on PlatformException catch (e) {
       _logError(e);

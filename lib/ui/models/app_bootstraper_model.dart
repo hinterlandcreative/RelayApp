@@ -44,8 +44,11 @@ class AppBootstrapperModel extends ChangeNotifier {
     if(stopwatch.elapsedMilliseconds < _minimumWaitDuration.inMilliseconds) {
       await Future.delayed(Duration(milliseconds: _minimumWaitDuration.inMilliseconds - stopwatch.elapsedMilliseconds));
     }
-    while(await Permission.contacts.isGranted == false) {
+    while(await Permission.contacts.isGranted == false && !await Permission.contacts.isPermanentlyDenied) {
       await Permission.contacts.request();
+      if(await Permission.contacts.isDenied) {
+        break;
+      }
     }
     _status = status;
     notifyListeners();

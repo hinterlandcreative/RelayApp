@@ -22,6 +22,7 @@ class GroupsCollectionModel extends CollectionBaseModel<ToggleableGroupItemModel
   StreamSubscription _updatesSubscription;
   StreamSubscription _purchasesSubscription;
   bool _hasUnlimitedGroups = false;
+  bool _isLoaded = false;
 
   GroupsCollectionModel._(this._groupService, this._purchasesService, this._appSettings) {
     _updatesSubscription = _groupService.updatesReceived
@@ -50,6 +51,9 @@ class GroupsCollectionModel extends CollectionBaseModel<ToggleableGroupItemModel
   @override
   UnmodifiableListView<ToggleableGroupItemModel> get items => UnmodifiableListView(_hasUnlimitedGroups ? _items : _items.take(1));
 
+
+  bool get shouldShowPaywall => _shouldShowPaywall();
+
   @override
   void dispose() { 
     _items.forEach((f) => f.dispose());
@@ -60,6 +64,7 @@ class GroupsCollectionModel extends CollectionBaseModel<ToggleableGroupItemModel
 
   @override
   Future loadChildren() async {
+    _isLoaded = false;
     var groups  = await _groupService.getAllGroups();
     _hasUnlimitedGroups = await _purchasesService.hasUnlimitedGroupsEntitlement();
     var groupSort = GroupSort.parseInt(await _appSettings.getSettingInt(AppSettingsConstants.group_sorting_settings_key, GroupSort.alphabetical.toInt()));
@@ -91,6 +96,7 @@ class GroupsCollectionModel extends CollectionBaseModel<ToggleableGroupItemModel
     _items = groups
       .map((g) => ToggleableGroupItemModel(g))
       .toList();
+    _isLoaded = true;
 
     notifyListeners();
   }
@@ -125,5 +131,15 @@ class GroupsCollectionModel extends CollectionBaseModel<ToggleableGroupItemModel
 
   Future duplicateGroup(GroupItemModel oldGroup) async {
     await _groupService.duplicateGroup(oldGroup);
+  }
+
+
+
+  bool _shouldShowPaywall() {
+    if(!_isLoaded) {
+      return _hasUnlimitedGroups;
+    } else {
+      return _items.isNotEmpty && !_hasUnlimitedGroups;
+    }
   }
 }

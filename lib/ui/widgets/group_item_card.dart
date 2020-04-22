@@ -161,6 +161,7 @@ class GroupItemCard extends StatelessWidget {
   }
 
   void _showModalDialog(BuildContext context, GroupItemModel model) async {
+    var groupCollectionModel = Provider.of<GroupsCollectionModel>(context, listen: false);
     try {
       if(await Vibration.hasVibrator()) {
         await Vibration.vibrate(duration: 100);
@@ -171,7 +172,7 @@ class GroupItemCard extends StatelessWidget {
       context, 
       model.name, 
       <Option>[
-        Option(
+        if(!groupCollectionModel.shouldShowPaywall) Option(
           Text("Duplicate".i18n, style: AppStyles.heading2Bold),
           Icon(Icons.content_copy),
           () => Provider.of<GroupsCollectionModel>(context, listen: false).duplicateGroup(model)
