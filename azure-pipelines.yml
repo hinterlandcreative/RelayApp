@@ -28,15 +28,17 @@ jobs:
         provProfileSecureFile: 'HSCOrelaydistribution.mobileprovision'
       displayName: Installing iOS Dist Mobile Provisioning Profile
     - task: DownloadSecureFile@1
+      name: iosGoogleServices
       inputs:
         secureFile: 'GoogleService-Info.plist'
-    - script: cp GoogleService-Info.plist ios/Runner/GoogleService-Info.plist
+    - script: cp $(iosGoogleServices.secureFilePath) ios/Runner/GoogleService-Info.plist
     - task: DownloadSecureFile@1
+      name: apiConstants
       inputs:
         secureFile: 'api_constants.dart'
     - script: |
         mkdir -p lib/secrets
-        cp api_constants.dart lib/secrets/api_constants.dart
+        cp $(apiConstants.secureFilePath) lib/secrets/api_constants.dart
     - task: FlutterInstall@0
     - script: |
         echo $(FlutterToolPath)
