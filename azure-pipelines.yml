@@ -53,7 +53,7 @@ jobs:
     - script: |
         export PATH=$PATH:$(FlutterToolPath):$(FlutterToolPath)/cache/dart-sdk/bin:$(FlutterToolPath)/../.pub-cache/bin/
         flutter build ios
-      displayName: Build Android & iOS App.
+      displayName: Build iOS App.
     - task: FlutterTest@0
       inputs:
         projectDirectory: '.'
@@ -82,5 +82,5 @@ jobs:
         git add pubspec.yaml
         git commit -m "Updated Automated Build Number [skip ci]"
         git pull origin master --rebase
-        git push https://$USERNAME:$PASSWORD@github.com/hinterlandsupplyco/JaMa.git HEAD:master
+        git push https://$USERNAME:$PASSWORD@github.com/hinterlandsupplyco/RelayApp.git HEAD:master
       displayName: Push updated pubspec
