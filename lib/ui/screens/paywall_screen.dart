@@ -80,7 +80,7 @@ class PaywallScreen extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: AppStyles.horizontalMargin),
                                 child: Text(
-                                  "Unlock unlimited mass texting groups. Create as many new groups as you need and send unlimited messages.".i18n,
+                                  "product_description".i18n,
                                   style: AppStyles.paragraph),
                               ),
                               Box(height: 37.0)

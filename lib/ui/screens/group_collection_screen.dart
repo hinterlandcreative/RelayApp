@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:commons/commons.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:hidden_drawer_menu/hidden_drawer/hidden_drawer_menu.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:relay/services/purchases_service.dart';
@@ -53,53 +56,61 @@ class _GroupCollectionScreenState extends State<GroupCollectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FocusWatcher(
-      child: Scaffold(
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-          child: Consumer<PurchasesService>(
-            builder: (context, purchases, _) => FloatingActionButton(
-              onPressed: () async {
-                if (await purchases.hasUnlimitedGroupsEntitlement()) {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => GroupCreateNewScreen()));
-                } else {
-                  Navigator.push(context, ScaleRoute(page:PaywallScreen(onSuccessBuilder: () => GroupCreateNewScreen())));
-                }
-              },
-              backgroundColor: AppStyles.brightGreenBlue,
-              child: Icon(Icons.add, color: Colors.white,),
-            ),
-          ),
-        ),
-        body: IgnorePointer(
-          ignoring: isMenuOpen,
-          child: ChangeNotifierProvider(
-            create: (_) => GroupsCollectionModel(),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppStyles.primaryGradientStart, AppStyles.primaryGradientEnd],
-                  begin: Alignment.bottomLeft,
-                  end: Alignment.topRight)),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top + 30.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: AppStyles.horizontalMargin),
-                      child: Hamburger(
-                        onTap: () => SimpleHiddenDrawerProvider.of(context).toggle()),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 6.0, left: AppStyles.horizontalMargin),
-                      child: Text("Groups".i18n, style: AppStyles.heading1,),),
-                    _buildSearchBar(context),
-                ],),
+    return ChangeNotifierProvider(
+      create: (_) => GroupsCollectionModel(),
+      child:  FocusWatcher(
+        child: Scaffold(
+          floatingActionButton: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            child: Consumer<GroupsCollectionModel>(
+              builder: (context, model, _) => FloatingActionButton(
+                onPressed: () async {
+                  if (model.shouldShowPaywall) {
+                    Navigator.push(context, ScaleRoute(page:PaywallScreen(onSuccessBuilder: () => GroupCreateNewScreen())));
+                  } else if (await Permission.contacts.isDenied) {
+                    warningDialog(
+                      context, 
+                      "no-contacts-permission-text".i18n,
+                      positiveText: "Open Settings".i18n,
+                      positiveAction: () => openAppSettings(),
+                      neutralText: "Exit".i18n,
+                    );
+                  } else {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => GroupCreateNewScreen()));
+                  }
+                },
+                backgroundColor: AppStyles.brightGreenBlue,
+                child: Icon(Icons.add, color: Colors.white,),
               ),
             ),
+          ),
+          body: IgnorePointer(
+            ignoring: isMenuOpen,
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppStyles.primaryGradientStart, AppStyles.primaryGradientEnd],
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight)),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 30.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: AppStyles.horizontalMargin),
+                        child: Hamburger(
+                          onTap: () => SimpleHiddenDrawerProvider.of(context).toggle()),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 20.0, bottom: 6.0, left: AppStyles.horizontalMargin),
+                        child: Text("Groups".i18n, style: AppStyles.heading1,),),
+                      _buildSearchBar(context),
+                  ],),
+                ),
+              ),
           ),
         ),
       ),
