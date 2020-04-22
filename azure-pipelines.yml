@@ -54,10 +54,10 @@ jobs:
         export PATH=$PATH:$(FlutterToolPath):$(FlutterToolPath)/cache/dart-sdk/bin:$(FlutterToolPath)/../.pub-cache/bin/
         flutter build ios
       displayName: Build iOS App.
-    - task: FlutterTest@0
-      inputs:
-        projectDirectory: '.'
-      displayName: Run Unit Tests.
+#    - task: FlutterTest@0
+#      inputs:
+#        projectDirectory: '.'
+#      displayName: Run Unit Tests.
     - script: /usr/bin/xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -sdk iphoneos -archivePath build/ios/iphoneos/RelayRelease.xcarchive -configuration Release archive
       displayName: Archive iOS App
     - script: | 
