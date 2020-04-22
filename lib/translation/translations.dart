@@ -12,6 +12,8 @@ extension Localization on String {
         "%d Contacts" : "%d Contacts",
         "Contacts" : "Contacts",
         "Add Contact" : "Add Contact",
+        "Open Settings" : "Open Settings",
+        "Exit" : "Exit",
         "Compose" : "Compose",
         "compose" : "compose",
         "Please enter a message first." : "Please enter a message first.",
@@ -29,6 +31,7 @@ extension Localization on String {
 				"Delete" : "Delete",
         "Cancel" : "Cancel",
         "No results." : "No results.",
+        "Let's add your first group." : "Let's add your first group.",
         "loading your contacts.  " : "loading your contacts.  ",
         "loading your contacts.. " : "loading your contacts.. ",
         "loading your contacts..." : "loading your contacts...",
@@ -62,10 +65,11 @@ extension Localization on String {
         "product_pricing: %s / %s" : "%s / %s",
 				"lifetime" : "lifetime",
 				"Restore Purchases" : "Restore Purchases",
-				"subscription_tos" : "Subscriptions will automatically renew and your purchase method will be charged at the end of each period, unless you unsubscribe at least 24 hours before.",
+				"subscription_tos" : "* Subscriptions will automatically renew and your purchase method will be charged at the end of each period, unless you unsubscribe at least 24 hours before.",
 				"Purchase failed." : "Purchase failed.",
+        "no-contacts-permission-text" : "Relay cannot function without access to your contacts.\n\nPlease reinstall the app and allow access or open settings to allow Relay access to contacts.",
         "Unlimited groups have not been purchased using this account." : "Unlimited groups have not been purchased using this account.",
-        "Unlock unlimited mass texting groups. Create as many new groups as you need and send unlimited messages." : "Unlock unlimited mass texting groups. Create as many new groups as you need and send unlimited messages.",
+        "product_description" : "Unlock unlimited mass texting groups. Create as many new groups as you need and send unlimited messages.\n\nGet access to new features like scheduled messages, templates and more.",
         " (%d people selected)" : ""
           .zero("  (No people selected)")
           .one("  (1 person selected)")
