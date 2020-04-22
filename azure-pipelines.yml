@@ -15,7 +15,7 @@ jobs:
     - task: InstallAppleProvisioningProfile@1
       inputs:
         provisioningProfileLocation: 'secureFiles'
-        provProfileSecureFile: 'HSCO.mobileprovision'
+        provProfileSecureFile: 'HSCOrelaydev.mobileprovision'
       displayName: Installing iOS Dev Mobile Provisioning Profile
     - task: InstallAppleCertificate@2
       inputs:
