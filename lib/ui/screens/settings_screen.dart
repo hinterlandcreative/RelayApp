@@ -45,7 +45,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Consumer<AppSettingsModel>(
       builder: (context, model, __) {
-
         return FocusWatcher(
           child: Scaffold(
             body: Container(
@@ -127,7 +126,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Box(height: 60.0,),
                         Padding(
                           padding: EdgeInsets.only(left: AppStyles.horizontalMargin),
-                          child: Row(children: <Widget>[
+                          child: Row(
+                            children: <Widget>[
                             GestureDetector(
                               onTap: () async {
                                 if(await Permission.photos.isGranted == false) {
@@ -157,18 +157,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         child: Icon(Icons.person, color: Colors.white, size: 30.0,),)
                                       : null,
                                 ),
-                                Box(height: 10.0,),
-                                Text("change".i18n, style: AppStyles.smallText.copyWith(color: AppStyles.primaryGradientStart))
+                                SizedBox(height: 10.0,),
+                                Text(
+                                  "change".i18n, 
+                                  style: AppStyles.smallText.copyWith(color: AppStyles.primaryGradientStart))
                               ],),
                             ),
                             Box(width: 20.0,),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 24.0),
-                              child: GestureDetector(
-                                onTap: () => _changeName(context, model),
-                                child: TextOneLine(
-                                  model.name, 
-                                  style: AppStyles.heading1.copyWith(fontWeight: FontWeight.w100, color: Colors.black)
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 24.0, right: AppStyles.horizontalMargin),
+                                child: GestureDetector(
+                                  onTap: () => _changeName(context, model),
+                                  child: TextOneLine(
+                                    model.name == null || model.name.isEmpty ? "Enter Name".i18n : model.name,
+                                    style: AppStyles.heading1.copyWith(fontWeight: FontWeight.w100, color: Colors.black)
+                                  ),
                                 ),
                               ),
                             )

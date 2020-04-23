@@ -55,8 +55,13 @@ class AppSettingsService {
   }
 
   Future<bool> getSettingBool(String key, [bool defaultValue = false]) async {
-    var i = await getSettingInt(key, defaultValue ? 0 : 1);
-    return i > 0;
+    var prefs = await _prefs.future;
+    return await _getSetting(
+      prefs,
+      key, 
+      defaultValue, 
+      prefs.getBool,
+      prefs.setBool);
   }
 
   void setSettingsBool(String key, bool value) {
