@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:relay/translation/translations.dart';
 import 'package:relay/core/app_settings_keys.dart';
 import 'package:relay/ioc/dependency_registrar.dart';
 import 'package:relay/models/group_sort.dart';
@@ -76,7 +75,6 @@ class AppSettingsModel extends ChangeNotifier {
 
   void _loadData() async {
     _name = await _appSettings.getSettingString(AppSettingsConstants.profile_name_settings_key);
-    _name = _name.isEmpty ? "Enter Name".i18n : _name;
     var path = await _appSettings.getSettingString(AppSettingsConstants.profile_image_path_settings_key);
     _imagePath = await _imageService.getImagePath(path);
     _defaultGroupSort = GroupSort.parseInt(
@@ -87,6 +85,7 @@ class AppSettingsModel extends ChangeNotifier {
 
     _signature = await _appSettings.getSettingString(AppSettingsConstants.signature_settings_key);
     _autoIncludeSignature = await _appSettings.getSettingBool(AppSettingsConstants.auto_include_signature_settings_key);
+    print("settings loaded");
     notifyListeners();
   }
 }

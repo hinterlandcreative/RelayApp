@@ -74,9 +74,14 @@ class _MenuScreenState extends State<MenuScreen> {
                           ),
                         ),
                         Box(width: 10.0,),
-                        TextOneLine(
-                          model.name, 
-                          style: AppStyles.heading2.copyWith(color: Colors.white, fontWeight: FontWeight.w100)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: TextOneLine(
+                              model.name,
+                              style: AppStyles.heading2.copyWith(color: Colors.white, fontWeight: FontWeight.w100)
+                            ),
+                          ),
                         ),
                       ],
                     ),
