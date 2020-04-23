@@ -46,7 +46,7 @@ jobs:
         echo $PATH
         flutter pub global activate pubspec_version
         pubver bump patch
-        pubver set `pubver get`+'$(Build.BuildNumber)
+        pubver set `pubver get`+$(Build.BuildNumber)
         echo $(Agent.BuildDirectory)
         cd $(Agent.BuildDirectory)
         ls
