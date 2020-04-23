@@ -45,7 +45,8 @@ jobs:
         export PATH=$PATH:$(FlutterToolPath):$(FlutterToolPath)/cache/dart-sdk/bin:$(FlutterToolPath)/../.pub-cache/bin/
         echo $PATH
         flutter pub global activate pubspec_version
-        pubver bump build
+        pubver bump patch
+        pubver set `pubver get`+'$(Build.BuildNumber)
         echo $(Agent.BuildDirectory)
         cd $(Agent.BuildDirectory)
         ls
