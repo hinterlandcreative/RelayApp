@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:commons/commons.dart';
+import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 import 'package:waiting_dialog/waiting_dialog.dart';
 
 import 'package:relay/translation/translations.dart';
@@ -11,9 +12,20 @@ import 'package:relay/services/purchases_service.dart';
 import 'package:relay/ui/app_styles.dart';
 import 'package:relay/ui/transitions/fade_route.dart';
 
-class PaywallScreen extends StatelessWidget {
+class PaywallScreen extends StatefulWidget {
   final Widget Function() onSuccessBuilder;
   const PaywallScreen({Key key, this.onSuccessBuilder}) : super(key: key);
+
+  @override
+  _PaywallScreenState createState() => _PaywallScreenState();
+}
+
+class _PaywallScreenState extends State<PaywallScreen> with RouteAwareAnalytics {
+  @override
+  String get screenClass => "PaywallScreen";
+
+  @override
+  String get screenName => "/Paywall";
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +170,7 @@ class PaywallScreen extends StatelessWidget {
       onWaiting:() => purchases.restorePurchases(),
       onDone: () async {
         if(await purchases.hasUnlimitedGroupsEntitlement()) {
-          await Navigator.of(context).pushReplacement(FadeRoute(page: onSuccessBuilder()));
+          await Navigator.of(context).pushReplacement(FadeRoute(page: widget.onSuccessBuilder()));
         } else {
           infoDialog(context, "Unlimited groups have not been purchased using this account.".i18n);
         }
@@ -167,7 +179,7 @@ class PaywallScreen extends StatelessWidget {
 
   Future _makePurchase(PurchasesService purchases, Package package, BuildContext context) async {
     if(await purchases.purchaseUnlimitedGroupsPackage(package)) {
-      await Navigator.of(context).pushReplacement(FadeRoute(page: onSuccessBuilder()));
+      await Navigator.of(context).pushReplacement(FadeRoute(page: widget.onSuccessBuilder()));
     } else {
       warningDialog(
         context, 

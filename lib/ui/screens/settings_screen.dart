@@ -7,6 +7,7 @@ import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 
 import 'package:relay/models/group_sort.dart';
 import 'package:relay/translation/translations.dart';
@@ -22,9 +23,15 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytics {
   final TextEditingController signatureTextController = TextEditingController();
   final FocusNode signatureFocusNode = FocusNode();
+
+  @override
+  String get screenClass => "SettingsScreen";
+
+  @override
+  String get screenName => "/Settings";
 
   @override
   void dispose() { 

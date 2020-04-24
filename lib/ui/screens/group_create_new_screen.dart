@@ -7,6 +7,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:provider/provider.dart';
+import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 import 'package:waiting_dialog/waiting_dialog.dart';
 
 import 'package:relay/ui/models/add_new_group_model.dart';
@@ -21,12 +22,18 @@ class GroupCreateNewScreen extends StatefulWidget {
   _GroupCreateNewScreenState createState() => _GroupCreateNewScreenState();
 }
 
-class _GroupCreateNewScreenState extends State<GroupCreateNewScreen> {
+class _GroupCreateNewScreenState extends State<GroupCreateNewScreen> with RouteAwareAnalytics {
   final double _topOfContentHeight = 100.0;
 
   final double _selectedContactsWidgetHeight = 80.0;
 
   final TextEditingController groupTextEditingController = TextEditingController();
+
+  @override
+  String get screenClass => "GroupCreateNewScreen";
+
+  @override
+  String get screenName => "/GroupCreateNew";
 
   @override
   void dispose() { 

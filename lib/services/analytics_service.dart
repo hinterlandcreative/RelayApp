@@ -5,11 +5,12 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:purchases_flutter/package_wrapper.dart';
 
 class AnalyticsService {
-  final FirebaseAnalytics analytics;
+  final FirebaseAnalytics _analytics;
 
-  const AnalyticsService._(this.analytics);
+  const AnalyticsService._(this._analytics);
 
   factory AnalyticsService() {
     var analytics = FirebaseAnalytics();
@@ -21,11 +22,11 @@ class AnalyticsService {
     // This is not an assert because we don't want to crash over analytics.
     if(name == null || name.isEmpty) return;
 
-    await analytics.logEvent(name: name,parameters: properties);
+    await _analytics.logEvent(name: name,parameters: properties);
   }
 
   RouteObserver getObserver() {
-    return FirebaseAnalyticsObserver(analytics: analytics);
+    return FirebaseAnalyticsObserver(analytics: _analytics);
   }
 
   Future logException(PlatformException e) async {

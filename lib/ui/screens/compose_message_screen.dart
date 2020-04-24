@@ -6,6 +6,7 @@ import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 
 import 'package:relay/models/contact_item.dart';
 import 'package:relay/models/group_item.dart';
@@ -25,8 +26,14 @@ class ComposeMessageScreen extends StatefulWidget {
   _ComposeMessageScreenState createState() => _ComposeMessageScreenState();
 }
 
-class _ComposeMessageScreenState extends State<ComposeMessageScreen> {
+class _ComposeMessageScreenState extends State<ComposeMessageScreen> with RouteAwareAnalytics {
   final TextEditingController textMessagingController = TextEditingController();
+
+  @override
+  String get screenClass => "ComposeMessageScreen";
+
+  @override
+  String get screenName => "/ComposeMessage";
 
   @override
   void dispose() { 
