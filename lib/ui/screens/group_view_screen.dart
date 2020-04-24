@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 
 import 'package:relay/ui/screens/compose_message_screen.dart';
 import 'package:relay/models/toggleable_contact_model.dart';
@@ -13,11 +14,21 @@ import 'package:relay/models/group_item.dart';
 import 'package:relay/ui/models/show_group_model.dart';
 import 'package:relay/ui/app_styles.dart';
 
-class GroupViewScreen extends StatelessWidget {
+class GroupViewScreen extends StatefulWidget {
   final GroupItemModel _groupModel;
 
   const GroupViewScreen(this._groupModel, {Key key}) : super(key: key);
 
+  @override
+  _GroupViewScreenState createState() => _GroupViewScreenState();
+}
+
+class _GroupViewScreenState extends State<GroupViewScreen> with RouteAwareAnalytics {
+  @override
+  String get screenClass => "GroupViewScreen";
+
+  @override
+  String get screenName => "/GroupView";
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +36,7 @@ class GroupViewScreen extends StatelessWidget {
     var top = MediaQuery.of(context).padding.top;
 
     return ChangeNotifierProvider<ShowGroupModel>(
-      create: (_) => ShowGroupModel(_groupModel),
+      create: (_) => ShowGroupModel(widget._groupModel),
       child: Consumer<ShowGroupModel>(
       builder: (context, model, _) => FocusWatcher(
       child: Scaffold(
@@ -119,7 +130,7 @@ class GroupViewScreen extends StatelessWidget {
                         context, 
                         MaterialPageRoute(
                           builder: (_) => ComposeMessageScreen(
-                            group: _groupModel,
+                            group: widget._groupModel,
                             recipients: model.selectedContacts,)));
                     },
                     child: Padding(

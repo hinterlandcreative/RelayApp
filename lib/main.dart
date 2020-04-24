@@ -8,7 +8,7 @@ import 'package:i18n_extension/i18n_widget.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'package:relay/services/analytics_service.dart';
+import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 import 'package:relay/services/purchases_service.dart';
 import 'package:relay/ui/app_styles.dart';
 import 'package:relay/ui/models/app_settings_model.dart';
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
                 supportedLocales: [
                    const Ui.Locale('en', "US"), 
                 ],
-          navigatorObservers: [dependencyLocator<AnalyticsService>().getObserver()],
+          navigatorObservers: [routeObserver],
           home: I18n(
             initialLocale: Ui.Locale('en', 'US'),
             child: SplashScreen()),

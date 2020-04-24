@@ -2,6 +2,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 
 import 'package:relay/ui/models/onboarding/onboarding_model.dart';
 import 'package:relay/translation/translations.dart';
@@ -16,12 +17,18 @@ class OnboardingScreen extends StatefulWidget {
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen> with RouteAwareAnalytics {
   final double topHeaderPaddingHeight = 100.0;
   final double indicatorBoxHeight = 50.0;
   final double nextOrCompleteBoxHeight = 100.0;
   final PageController pageController = PageController(initialPage: 0);
   int currentPage = 0;
+
+  @override
+  String get screenClass => "OnboardingScreen";
+
+  @override
+  String get screenName => "/Onboarding";
 
   @override
   void dispose() { 
