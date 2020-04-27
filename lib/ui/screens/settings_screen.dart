@@ -16,6 +16,7 @@ import 'package:relay/translation/translations.dart';
 import 'package:relay/ui/app_styles.dart';
 import 'package:relay/mixins/color_mixin.dart';
 import 'package:relay/ui/models/app_settings_model.dart';
+import 'package:relay/ui/models/package_info_model.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettingsModel model;
@@ -291,10 +292,18 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
                     )
                   ),
                   Positioned(
-                    bottom: MediaQuery.of(context).padding.bottom,
+                    bottom: 40.0,
                     left: AppStyles.horizontalMargin,
                     right: 0.0,
-                    child: Text("Copyright 2020 - Hinterland Supply Co.", style: AppStyles.smallText.copyWith(color: Colors.white)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Copyright 2020 - Hinterland Supply Co.", style: AppStyles.smallText.copyWith(color: Colors.white)),
+                        Text("Version: %s".fill([
+                          Provider.of<PackageInfoModel>(context).version
+                        ]), style: AppStyles.smallText.copyWith(color: Colors.white)),
+                      ],
+                    ),
                   )
                 ],
               ),

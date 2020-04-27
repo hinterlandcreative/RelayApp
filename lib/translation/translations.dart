@@ -70,6 +70,7 @@ extension Localization on String {
         "Terms of Use" : "Terms of Use",
 				"Privacy Policy" : "Privacy Policy",
         "I Agree" : "I Agree",
+        "Version: %s" : "Version: %s",
         "no-contacts-permission-text" : "Relay cannot function without access to your contacts.\n\nPlease reinstall the app and allow access or open settings to allow Relay access to contacts.",
         "Unlimited groups have not been purchased using this account." : "Unlimited groups have not been purchased using this account.",
         "product_description" : "Unlock unlimited mass texting groups. Create as many new groups as you need and send unlimited messages.\n\nGet access to new pro features like scheduled messages, templates and more.",

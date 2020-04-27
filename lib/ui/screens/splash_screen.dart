@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return ChangeNotifierProvider<AppBootstrapperModel>.value(
       value: bootstrapper,
       child: FutureBuilder<dynamic>(
-        future: bootstrapper.init(),
+        future: bootstrapper.init(context),
         initialData: BootstrapStatus.Initializing,
         builder: (context, _) => Container(
           decoration: BoxDecoration(

@@ -12,6 +12,7 @@ import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 import 'package:relay/services/purchases_service.dart';
 import 'package:relay/ui/app_styles.dart';
 import 'package:relay/ui/models/app_settings_model.dart';
+import 'package:relay/ui/models/package_info_model.dart';
 import 'package:relay/ui/screens/splash_screen.dart';
 import 'package:relay/ioc/dependency_registrar.dart';
 
@@ -43,7 +44,8 @@ class MyApp extends StatelessWidget {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AppSettingsModel()),
-          Provider<PurchasesService>.value(value: dependencyLocator<PurchasesService>())
+          Provider<PurchasesService>.value(value: dependencyLocator<PurchasesService>()),
+          ChangeNotifierProvider(create: (_) => PackageInfoModel(),)
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
