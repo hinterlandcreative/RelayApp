@@ -66,7 +66,9 @@ class AppBootstrapperModel extends ChangeNotifier {
 
   Future _incrementAppOpenCount() async {
     var openCount = await _appSettings.getSettingInt(AppSettingsConstants.analytics_app_open_count);
-    _appSettings.setSettingInt(AppSettingsConstants.analytics_app_open_count, openCount++);
+    openCount++;
+    _appSettings.setSettingInt(AppSettingsConstants.analytics_app_open_count, openCount);
+    print("recording app open count: $openCount");
   }
 }
 

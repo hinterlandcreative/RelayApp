@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import 'package:relay/services/app_reviews_service.dart';
 import 'package:relay/services/contacts_service.dart';
 import 'package:relay/services/purchases_service.dart';
 import 'package:relay/services/analytics_service.dart';
@@ -30,5 +31,6 @@ class DependencyRegistrar {
     dependencyLocator.registerSingleton(GroupService());
     dependencyLocator.registerSingleton(MessageService());
     dependencyLocator.registerSingleton(PurchasesService());
+    dependencyLocator.registerSingleton(AppReviewsService());
   }
 }

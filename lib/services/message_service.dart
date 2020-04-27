@@ -112,7 +112,9 @@ class MessageService {
     group = await _groupService.updateGroup(group);
 
     var messageCount = await _appSettingsService.getSettingInt(AppSettingsConstants.analytics_message_count);
-    _appSettingsService.setSettingInt(AppSettingsConstants.analytics_message_count, messageCount++);
+    messageCount++;
+    _appSettingsService.setSettingInt(AppSettingsConstants.analytics_message_count, messageCount);
+    print("recording message count: $messageCount");
 
     await _analyticsService.trackEvent(
       _messageSentEvent,

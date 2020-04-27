@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 
 import 'package:relay/models/group_sort.dart';
+import 'package:relay/services/app_reviews_service.dart';
 import 'package:relay/translation/eula.dart';
 import 'package:relay/translation/privacy_policy.dart';
 import 'package:relay/translation/translations.dart';
@@ -285,8 +286,15 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
                                   "Privacy Policy".i18n, 
                                   style: AppStyles.paragraph),
                                 onPressed: () => _showPrivacyPolicy(context),
-                              )
-                            ],)
+                              ),
+                            ],),
+                            FlatButton(
+                              color: AppStyles.brightGreenBlue,
+                              child: Text(
+                                "Review Relay".i18n, 
+                                style: AppStyles.paragraph),
+                              onPressed: () => _showReviews(context),
+                            )
                           ],),
                       ),
                     )
@@ -346,5 +354,9 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
       neutralText: "I Agree".i18n,
       icon: AlertDialogIcon.INFO_ICON,
       title: "Privacy Policy");
+  }
+
+  void _showReviews(BuildContext context) {
+    Provider.of<AppReviewsService>(context, listen: false).requestReviews(context);
   }
 }

@@ -85,7 +85,6 @@ class AppSettingsModel extends ChangeNotifier {
 
     _signature = await _appSettings.getSettingString(AppSettingsConstants.signature_settings_key);
     _autoIncludeSignature = await _appSettings.getSettingBool(AppSettingsConstants.auto_include_signature_settings_key);
-    print("settings loaded");
     notifyListeners();
   }
 }

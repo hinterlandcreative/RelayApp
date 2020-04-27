@@ -9,4 +9,6 @@ class AppSettingsConstants {
 
   static const String analytics_app_open_count = "analytics_app_open_count";
   static const String analytics_message_count = "analytics_message_count";
+
+  static const String reviews_have_been_shown = "reviews_have_been_shown";
 }

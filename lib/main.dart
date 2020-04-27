@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'package:relay/mixins/route_aware_analytics_mixin.dart';
+import 'package:relay/services/app_reviews_service.dart';
 import 'package:relay/services/purchases_service.dart';
 import 'package:relay/ui/app_styles.dart';
 import 'package:relay/ui/models/app_settings_model.dart';
@@ -45,7 +46,8 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AppSettingsModel()),
           Provider<PurchasesService>.value(value: dependencyLocator<PurchasesService>()),
-          ChangeNotifierProvider(create: (_) => PackageInfoModel(),)
+          ChangeNotifierProvider(create: (_) => PackageInfoModel(),),
+          Provider<AppReviewsService>.value(value: dependencyLocator<AppReviewsService>())
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

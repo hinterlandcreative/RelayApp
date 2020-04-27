@@ -72,11 +72,10 @@ class ComposeMessageModel extends ChangeNotifier {
         return true;
       } else if (nextStep == SendMessageNextStep.Skip) {
         continue;
-      }
-
-      
-      if(await _sendMessage(message, [recipient]) == MessageSendingResult.Success) {
-        sentRecipients.add(recipient);
+      } else {
+        if(await _sendMessage(message, [recipient]) == MessageSendingResult.Success) {
+          sentRecipients.add(recipient);
+        }
       }
     }
 
