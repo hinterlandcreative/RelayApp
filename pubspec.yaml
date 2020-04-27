@@ -1,5 +1,5 @@
 name: relay
-version: 1.1.5+20200427.1
+version: 1.1.6+20200427.2
 description: A new Flutter project.
 environment: 
   sdk: '>=2.6.0 <3.0.0'
@@ -38,7 +38,6 @@ dependencies:
   vibration: ^1.2.4
   cupertino_icons: ^0.1.2
   app_review: ^1.1.0+1
-  
   flutter_localizations: 
     sdk: flutter
   flutter: 
