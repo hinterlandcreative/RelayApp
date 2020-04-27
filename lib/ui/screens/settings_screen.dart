@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 
 import 'package:relay/models/group_sort.dart';
+import 'package:relay/translation/eula.dart';
+import 'package:relay/translation/privacy_policy.dart';
 import 'package:relay/translation/translations.dart';
 import 'package:relay/ui/app_styles.dart';
 import 'package:relay/mixins/color_mixin.dart';
@@ -191,6 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
                   ),
                   Positioned.fill(
                     top: headerHeight + 40.0,
+                    bottom: MediaQuery.of(context).padding.bottom + 14.0,
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: AppStyles.horizontalMargin),
@@ -268,9 +271,31 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
                                 child: Text(
                                   "Include signature on every message.".i18n, 
                                   style: AppStyles.paragraph))
+                            ],),
+                            Row(children: <Widget>[
+                              FlatButton(
+                                child: Text(
+                                  "Terms of Use".i18n, 
+                                  style: AppStyles.paragraph),
+                                onPressed: () => _showEula(context),
+                              ),
+                              FlatButton(
+                                child: Text(
+                                  "Privacy Policy".i18n, 
+                                  style: AppStyles.paragraph),
+                                onPressed: () => _showPrivacyPolicy(context),
+                              )
                             ],)
                           ],),
-                      ),))
+                      ),
+                    )
+                  ),
+                  Positioned(
+                    bottom: MediaQuery.of(context).padding.bottom,
+                    left: AppStyles.horizontalMargin,
+                    right: 0.0,
+                    child: Text("Copyright 2020 - Hinterland Supply Co.", style: AppStyles.smallText.copyWith(color: Colors.white)),
+                  )
                 ],
               ),
             ),
@@ -280,7 +305,7 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
     );
   }
 
-  _changeName(BuildContext context, AppSettingsModel model) {
+  void _changeName(BuildContext context, AppSettingsModel model) {
     singleInputDialog(
       context,
       label: "",
@@ -292,5 +317,25 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
       positiveAction: (name) => model.name = name,
       negativeText: "Cancel".i18n
     );
+  }
+
+  void _showEula(BuildContext context) {
+    errorDialog(
+      context,
+      Eula.text,
+      textAlign: TextAlign.left,
+      neutralText: "I Agree".i18n,
+      icon: AlertDialogIcon.INFO_ICON,
+      title: "EULA - Terms Of Use");
+  }
+
+  void _showPrivacyPolicy(BuildContext context) {
+    errorDialog(
+      context,
+      PrivacyPolicy.text,
+      textAlign: TextAlign.left,
+      neutralText: "I Agree".i18n,
+      icon: AlertDialogIcon.INFO_ICON,
+      title: "Privacy Policy");
   }
 }

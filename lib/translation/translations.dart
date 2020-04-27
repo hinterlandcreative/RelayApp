@@ -67,9 +67,12 @@ extension Localization on String {
 				"Restore Purchases" : "Restore Purchases",
 				"subscription_tos" : "* Subscriptions will automatically renew and your purchase method will be charged at the end of each period, unless you unsubscribe at least 24 hours before.",
 				"Purchase failed." : "Purchase failed.",
+        "Terms of Use" : "Terms of Use",
+				"Privacy Policy" : "Privacy Policy",
+        "I Agree" : "I Agree",
         "no-contacts-permission-text" : "Relay cannot function without access to your contacts.\n\nPlease reinstall the app and allow access or open settings to allow Relay access to contacts.",
         "Unlimited groups have not been purchased using this account." : "Unlimited groups have not been purchased using this account.",
-        "product_description" : "Unlock unlimited mass texting groups. Create as many new groups as you need and send unlimited messages.\n\nGet access to new features like scheduled messages, templates and more.",
+        "product_description" : "Unlock unlimited mass texting groups. Create as many new groups as you need and send unlimited messages.\n\nGet access to new pro features like scheduled messages, templates and more.",
         " (%d people selected)" : ""
           .zero("  (No people selected)")
           .one("  (1 person selected)")
