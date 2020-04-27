@@ -10,12 +10,14 @@ import 'package:provider/provider.dart';
 import 'package:relay/mixins/route_aware_analytics_mixin.dart';
 
 import 'package:relay/models/group_sort.dart';
+import 'package:relay/services/app_reviews_service.dart';
 import 'package:relay/translation/eula.dart';
 import 'package:relay/translation/privacy_policy.dart';
 import 'package:relay/translation/translations.dart';
 import 'package:relay/ui/app_styles.dart';
 import 'package:relay/mixins/color_mixin.dart';
 import 'package:relay/ui/models/app_settings_model.dart';
+import 'package:relay/ui/models/package_info_model.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppSettingsModel model;
@@ -284,17 +286,32 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
                                   "Privacy Policy".i18n, 
                                   style: AppStyles.paragraph),
                                 onPressed: () => _showPrivacyPolicy(context),
-                              )
-                            ],)
+                              ),
+                            ],),
+                            FlatButton(
+                              color: AppStyles.brightGreenBlue,
+                              child: Text(
+                                "Review Relay".i18n, 
+                                style: AppStyles.paragraph),
+                              onPressed: () => _showReviews(context),
+                            )
                           ],),
                       ),
                     )
                   ),
                   Positioned(
-                    bottom: MediaQuery.of(context).padding.bottom,
+                    bottom: 40.0,
                     left: AppStyles.horizontalMargin,
                     right: 0.0,
-                    child: Text("Copyright 2020 - Hinterland Supply Co.", style: AppStyles.smallText.copyWith(color: Colors.white)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Copyright 2020 - Hinterland Supply Co.", style: AppStyles.smallText.copyWith(color: Colors.white)),
+                        Text("Version: %s".fill([
+                          Provider.of<PackageInfoModel>(context).version
+                        ]), style: AppStyles.smallText.copyWith(color: Colors.white)),
+                      ],
+                    ),
                   )
                 ],
               ),
@@ -337,5 +354,9 @@ class _SettingsScreenState extends State<SettingsScreen> with RouteAwareAnalytic
       neutralText: "I Agree".i18n,
       icon: AlertDialogIcon.INFO_ICON,
       title: "Privacy Policy");
+  }
+
+  void _showReviews(BuildContext context) {
+    Provider.of<AppReviewsService>(context, listen: false).requestReviews(context);
   }
 }

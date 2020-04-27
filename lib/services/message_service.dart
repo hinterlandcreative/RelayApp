@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 
 import 'package:relay/core/app_settings_keys.dart';
+import 'package:relay/services/analytics_service.dart';
 import 'package:relay/services/app_settings_service.dart';
 import 'package:relay/data/db/query_package.dart';
 import 'package:relay/data/db/dto/message_dto.dart';
@@ -17,23 +18,26 @@ import 'package:relay/services/group_service.dart';
 
 class MessageService {
   static const String _messageDbName = "messages";
+  static const String _messageSentEvent = "messaging_message_sent";
   final DatabaseService _dbService;
   final GroupService _groupService;
   final AppSettingsService _appSettingsService;
+  final AnalyticsService _analyticsService;
 
   Completer<DbCollection> _messageDb = Completer();
 
-  MessageService._(this._dbService, this._groupService, this._appSettingsService) {
+  MessageService._(this._dbService, this._groupService, this._appSettingsService, this._analyticsService) {
     _dbService.getMainStorage().then((db) {
       _messageDb.complete(db.collections(_messageDbName));
     });
   }
 
-  factory MessageService([DatabaseService databaseService, GroupService groupService, AppSettingsService appSettings]) {
+  factory MessageService([DatabaseService databaseService, GroupService groupService, AppSettingsService appSettings, AnalyticsService analyticsService]) {
     return MessageService._(
       databaseService ?? dependencyLocator<DatabaseService>(), 
       groupService ?? dependencyLocator<GroupService>(),
-      appSettings ?? dependencyLocator<AppSettingsService>());
+      appSettings ?? dependencyLocator<AppSettingsService>(),
+      analyticsService ?? dependencyLocator<AnalyticsService>());
   }
 
   Future<List<MessageItemModel>> getAllMessages(GroupItemModel group) async {
@@ -106,6 +110,17 @@ class MessageService {
 
     group.lastMessageSentDate = dto.sendDateTime;
     group = await _groupService.updateGroup(group);
+
+    var messageCount = await _appSettingsService.getSettingInt(AppSettingsConstants.analytics_message_count);
+    messageCount++;
+    _appSettingsService.setSettingInt(AppSettingsConstants.analytics_message_count, messageCount);
+    print("recording message count: $messageCount");
+
+    await _analyticsService.trackEvent(
+      _messageSentEvent,
+      properties: {
+        'recipients': recipients.length,
+      });
 
     return MessageItemModel.fromDto(dto, group);
   }

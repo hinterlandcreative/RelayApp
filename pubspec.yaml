@@ -37,6 +37,8 @@ dependencies:
   purchases_flutter: ^1.0.4
   vibration: ^1.2.4
   cupertino_icons: ^0.1.2
+  app_review: ^1.1.0+1
+  
   flutter_localizations: 
     sdk: flutter
   flutter: 
