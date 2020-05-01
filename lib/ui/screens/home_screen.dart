@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     return SimpleHiddenDrawer(
+      disableCurrentScreenOnMenuOpened: true,
       contentCornerRadius: 40.0,
       menu: MenuScreen(),
       screenSelectedBuilder: (_, __) => GroupCollectionScreen(),
